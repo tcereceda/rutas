@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { PeopleService } from '../people.service';
-import { ActivatedRoute } from '@angular/router';
-import { switchMap, takeUntil } from "rxjs/operators";
+import { ActivatedRoute, Router } from '@angular/router';
+import { takeUntil } from "rxjs/operators";
 import { Subject } from 'rxjs';
+import { Location } from "@angular/common";
 
 @Component({
   selector: 'app-person-details',
@@ -11,11 +11,33 @@ import { Subject } from 'rxjs';
 })
 export class PersonDetailsComponent implements OnInit, OnDestroy {
   person;
+  showDetails;
+
   onDestroy = new Subject();
 
-  constructor(private peopleService: PeopleService, private activeRoute: ActivatedRoute) { }
+  constructor(    
+    private activeRoute: ActivatedRoute,
+    private router: Router,
+    public location: Location
+    ) { }
 
   ngOnInit() {
+    this.activeRoute.data
+      .pipe(
+        takeUntil(this.onDestroy)
+      )
+      .subscribe(routeData => {
+        
+        if (routeData.person)
+        {
+          this.person = routeData.person;
+        } else {
+          this.router.navigateByUrl('/home');
+        }
+
+        this.showDetails = routeData.showDetails;
+      });
+
   //   this.activeRoute.params.subscribe(params => {
   //     console.log(params);
   //   this.peopleService.getPersonById(+params.personId).subscribe(person => {
@@ -23,22 +45,28 @@ export class PersonDetailsComponent implements OnInit, OnDestroy {
   //   });
   // });
 
-  this.activeRoute.params
-  .pipe(
-    takeUntil(this.onDestroy),
-    switchMap(params => this.peopleService.getPersonById(+params.personId))
-  )
-  .subscribe(person => {
-    this.person = person;
-  });
+  // this.activeRoute.params
+  // .pipe(
+  //   takeUntil(this.onDestroy),
+  //   switchMap(params => this.peopleService.getPersonById(+params.personId))
+  // )
+  // .subscribe(person => {
+  //   this.person = person;
+  // });
 
-  this.activeRoute.queryParams.subscribe(console.log);
-  }
+  // this.activeRoute.queryParams.subscribe(console.log);
+   }
 
   ngOnDestroy(){
     console.log('PersonDetailsComponent destroyed!!');
     this.onDestroy.next();
     this.onDestroy.complete();
     
+  }
+
+  goBack(){
+    //this.location.back();
+    this.router.navigate(['../'], {relativeTo: this.activeRoute});
+    //this.router.navigateByUrl('../', {relativeTo: this.activeRoute});
   }
 }

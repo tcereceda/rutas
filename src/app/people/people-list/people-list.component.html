@@ -1,6 +1,10 @@
 <ul>
     <li *ngFor='let person of peopleService.getPeople() | async'>
-        <a [routerLink]="['/people',person.id]">{{person.name}}</a>
+        <a 
+        [routerLink]="['/people',person.id]"
+        [queryParams]="activeRoute.queryParams | async"
+        >{{person.name}}
+        </a>
     </li>
 </ul>
 <router-outlet></router-outlet>

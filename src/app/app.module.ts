@@ -1,18 +1,29 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { RouterModule , Routes} from "@angular/router";
+import { RouterModule , Routes, PreloadingStrategy, PreloadAllModules} from "@angular/router";
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { AboutComponent } from './about/about.component';
 import { NotfoundComponent } from './notfound/notfound.component';
 import { PeopleModule } from './people/people.module';
+import { ContactsModule } from './contacts/contacts.module';
+import { CustomRoutePreloader } from './custom-route-preloader';
 
 const routes:Routes= [
   {path: '', redirectTo: '/home', pathMatch: 'full'},
   {path: 'home', component: HomeComponent},
   {path: 'about', component: AboutComponent},
-  {path: '**' , component: NotfoundComponent}
+  {path: 'people', 
+   loadChildren: () => import('./people/people.module').then(m => m.PeopleModule)},
+  {
+    path: 'contacts', 
+    loadChildren: () => import('./contacts/contacts.module').then(m => m.ContactsModule),
+    data:{
+      preload: true
+    }
+  },
+   {path: '**' , component: NotfoundComponent}
 ];
 
 @NgModule({
@@ -24,11 +35,11 @@ const routes:Routes= [
   ],
   imports: [
     BrowserModule,
-    PeopleModule,
-    RouterModule.forRoot(routes)
+    RouterModule.forRoot(routes,
+      {preloadingStrategy: CustomRoutePreloader})
     
   ],
-  providers: [],
+  providers: [CustomRoutePreloader],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
