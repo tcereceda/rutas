@@ -9,19 +9,24 @@ import { NotfoundComponent } from './notfound/notfound.component';
 import { PeopleModule } from './people/people.module';
 import { ContactsModule } from './contacts/contacts.module';
 import { CustomRoutePreloader } from './custom-route-preloader';
+import { AuthGuard } from './auth.guard';
 
 const routes:Routes= [
   {path: '', redirectTo: '/home', pathMatch: 'full'},
   {path: 'home', component: HomeComponent},
   {path: 'about', component: AboutComponent},
   {path: 'people', 
-   loadChildren: () => import('./people/people.module').then(m => m.PeopleModule)},
+   loadChildren: () => import('./people/people.module').then(m => m.PeopleModule),
+   canLoad: [AuthGuard]
+  },
   {
     path: 'contacts', 
     loadChildren: () => import('./contacts/contacts.module').then(m => m.ContactsModule),
     data:{
       preload: true
-    }
+    },
+    canActivate: [AuthGuard],
+    canLoad: [AuthGuard]
   },
    {path: '**' , component: NotfoundComponent}
 ];

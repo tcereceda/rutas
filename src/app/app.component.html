@@ -1,6 +1,15 @@
 <h1>Router demo</h1>
 
 <ul>
+    <li *ngIf="authService.isLoggedIn===false">
+        <a (click)="authService.login()">Log In</a>
+    </li>
+    <li *ngIf="authService.isLoggedIn">
+        <a (click)="authService.logout()">Log Out</a>
+    </li>
+</ul>
+
+<ul>
 
 <li><a routerLink="/home" routerLinkActive="route-selected">Home</a></li>
 <li><a routerLink="/about" routerLinkActive="route-selected">About</a></li>
