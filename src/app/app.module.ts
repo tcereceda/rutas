@@ -10,6 +10,9 @@ import { PeopleModule } from './people/people.module';
 import { ContactsModule } from './contacts/contacts.module';
 import { CustomRoutePreloader } from './custom-route-preloader';
 import { AuthGuard } from './auth.guard';
+import { HttpClientModule } from '@angular/common/http';
+import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
+import { InMemoryDataService }  from './in-memory-data.service';
 
 const routes:Routes= [
   {path: '', redirectTo: '/home', pathMatch: 'full'},
@@ -37,11 +40,17 @@ const routes:Routes= [
     HomeComponent,
     AboutComponent,
     NotfoundComponent
+   
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
+    HttpClientInMemoryWebApiModule.forRoot(
+      InMemoryDataService, { dataEncapsulation: false }
+    ),
     RouterModule.forRoot(routes,
-      {preloadingStrategy: CustomRoutePreloader})
+      {preloadingStrategy: CustomRoutePreloader}),
+     
     
   ],
   providers: [CustomRoutePreloader],

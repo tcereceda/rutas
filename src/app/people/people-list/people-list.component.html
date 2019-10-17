@@ -1,8 +1,8 @@
 <ul>
-    <li *ngFor='let person of peopleService.getPeople() | async'>
+    <li *ngFor='let person of peopleService.getPeople() '>
         <a 
         [routerLink]="['/people',person.id]"
-        [queryParams]="activeRoute.queryParams | async"
+        [queryParams]="activeRoute.queryParams"
         >{{person.name}}
         </a>
     </li>

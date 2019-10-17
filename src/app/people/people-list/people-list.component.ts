@@ -8,10 +8,13 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./people-list.component.scss']
 })
 export class PeopleListComponent implements OnInit, OnDestroy {
-
+  people;
   constructor(public peopleService: PeopleService, public activeRoute: ActivatedRoute) { }
 
   ngOnInit() {
+    this.peopleService.getPeople().subscribe(people => {
+      this.people = people;
+    })
   }
 
   ngOnDestroy(){
